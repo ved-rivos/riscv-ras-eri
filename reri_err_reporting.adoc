@@ -429,31 +429,34 @@ the hardware unit.
 
 The error record holds a valid error log if the `v` field is 1.
 
-If the detected error was corrected then `ce` is set to 1. If the detected error
-could not be corrected but was deferred then `ude` is set to 1. If the detected
+If the detected error was corrected, then `ce` is set to 1. If the detected error
+could not be corrected but was deferred, then `ude` is set to 1. If the detected
 error could not be corrected or deferred and thus needs urgent handling by an
 RAS handler, then the `uue` bit is set to 1. If the error record does not log a
 class of errors (e.g., does not support UDE), then the corresponding bit may be
 hardwired to 0. If the bits corresponding to more than one error class are set
-to 1 then the error record holds information about the highest severity error
-class among the bits set.
+to 1, then the error record holds information about the highest severity error
+class among the bits set. The error record may be used to provide an
+informational update by setting the `v` bit to 1 and setting `ce`, `ude`, and
+`uue` bits to 0. Such informational updates are signaled using the signal
+configured in `control_i.ces`.
 
 When `v` is 1, if more errors of the same class as the error currently logged in
-the error record occur then the multiple-occurrence (`mo`) bit is set to indicate
+the error record occur, then the multiple-occurrence (`mo`) bit is set to indicate
 the multiple occurrence of errors of the same severity. See <<OVERWRITE_RULES>>
 for rules on overwriting the error record in such cases.
 
 Each error of an error class (CE, UDE, or UUE) that may be logged in an error
-record may be associated with a priority which is a number between 0 and 3;
-priority value of 3 being the highest priority and priority value of 0 being the
-lowest priority. The priority values indicate relative priority among errors of
-the same error class. Among errors of different error classes the priority
-values are unrelated.
+record may be associated with a priority, which is a number between 0 and 3;
+priority value of 3 being the highest and a priority value of 0 being the lowest.
+The priority values indicate relative priority among errors of the same error
+class and therefore represent sub-classes of errors. Among errors of different
+error classes the priority values are unrelated.
 
 [NOTE]
 ====
 Some implementations may report errors from more than one sources into a
-single error records. Such implementations may prioritize reporting of error
+single error record. Such implementations may prioritize reporting of error
 from one source over the other using the `pri` associated with the error when
 both sources simultaneously detect an error of the same class (e.g., CE). The
 priority is also used to determine if a new error may overwrite a previously
@@ -461,9 +464,9 @@ reported error of the same error class in the error record.
 ====
 
 The `pri` field in the error record indicates the priority of the currently
-logged error in the error record. The `pri` is a WARL field and an
-implementation may support only a subset of legal values for this field and
-an implementation that does not support reporting of a priority per error may
+logged error in the error record. The `pri` is a WARL field, and an
+implementation may support only a subset of legal values for this field.
+An implementation that does not support reporting of a priority per error may
 hardwire this field to 0.
 
 The error record overwrite rules use the error class (CE, UDE, or UUE) and the
